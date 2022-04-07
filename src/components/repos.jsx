@@ -1,39 +1,40 @@
 import React from 'react';
-import {API, getNameProfile} from './variables';
-import loadErrorPage from './errorPage'
+import { API } from './variables';
+import { getNameProfile } from './profile';
 
 
-const showRepos = async () => {
-    try{
-        const response = await fetch(API.concat(getNameProfile()).concat("/repos"));
-        if(!response.ok){
+
+const getRepos = async () => {
+    const response = await fetch(API.concat(getNameProfile()).concat("/repos"));
+    try {
+        if (!response.ok) {
             throw new Error(response.status);
         }
         const datos = await response.json();
-        loadRepos(datos);
+        return datos;
 
-    }catch(e){
-        loadErrorPage(e)
+    } catch (e) {
+        //loadErrorPage(e)
     }
 }
 
-const loadRepos = (data)=>{
+const loadRepos = (data) => {
 
-    let repositories =  document.getElementById("repositories");
+    let repositories = document.getElementById("repositories");
 
     repositories.innerHTML = "";
 
-    try{
-        for(let d of data){
-        
+    try {
+        for (let d of data) {
+
 
             let div = document.createElement("div");
-    
-            const   {html_url , name, description, size} = d;
-    
-    
+
+            const { html_url, name, description, size } = d;
+
+
             div.classList.add("repositories__item");
-    
+
             div.innerHTML = `
                 <a href="${html_url}" target="_blank">
                     <h2 class="repositories__name">${name}</h2>
@@ -45,22 +46,38 @@ const loadRepos = (data)=>{
                 </div>`;
             repositories.appendChild(div);
         }
-    }catch(e){
+    } catch (e) {
         console.log(new Error(e));
 
     }
 
-    
+
 }
 
 
-function Repos(){
-    return (
-        <div id="repositories" className="repositories"></div>
-    )
+function Repos({ repos }) {
+        return (
+            <div id="repositories" className="repositories">
+                {repos.map(repo =>
+                    <div className='repositories__item' key={repo.id}>
+                        <a href={repo.html_url} target="_blank" rel="noreferrer noopener">
+                            <h2 className="repositories__name">{repo.name}</h2>
+                        </a>
+                        <p className="repositories__description">{repo.description}</p>
+                        <div className="repositories__stars">
+                            <i className="far fa-star"></i>
+                            <span className="number">{repo.stargazers_count}</span>
+                        </div>
+                    </div>
+
+                )}
+            </div>
+        )
 }
+
+
 
 
 export default Repos;
 
-export {showRepos, loadRepos};
+export { getRepos, loadRepos };

@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-export const loadErrorPage = (e) => {
+/* export const loadErrorPage = (e) => {
 
     document.getElementById("header").classList.add('header--top');
     document.querySelector("main").style.display = "block";
@@ -13,12 +13,15 @@ export const loadErrorPage = (e) => {
     document.querySelector("main .errorPage").innerHTML = `
         <h2>User not found :(</h2>
         <p>${e}</p>`;       
-}
+} */
 
 
-function ErrorPage(){
+function ErrorPage({error}){
     return(
-        <div className="errorPage" style={{display: "none"}}></div>
+        <div className="errorPage">
+            <h2>User not found :(</h2>
+            <p>{error}</p>
+        </div>
     )
 }
 

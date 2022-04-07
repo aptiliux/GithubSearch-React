@@ -1,26 +1,37 @@
 import React from 'react';
-import {API, getNameProfile} from './variables';
-import {loadErrorPage} from './errorPage'
+import { API } from './variables';
 
-const showProfile = async () =>{
-    
-    try{        
+let nameProfile;
+
+
+const getNameProfile = () => {
+    return nameProfile;
+}
+
+const setNameProfile = (name) => {
+    nameProfile = name;
+}
+
+const getProfile = async () => {
+    try {
         const response = await fetch(API.concat(getNameProfile()));
-        if(!response.ok){
+
+        if (!response.ok) {
             throw new Error(response.status);
         }
+
         const datos = await response.json();
-        loadProfile(datos);
-        
-    }catch(e){
-        loadErrorPage(e)
+        return datos;
+
+    } catch (e) {
+        return {error: e};
     }
 }
 
-const loadProfile = (data) => {
-    const header = document.getElementById("header");
-    
-    header.classList.add('header--top');
+const loadProfile = () => {
+
+
+    //header.classList.add('header--top');
     document.querySelector("main").style.display = "none";
     document.querySelector("main").style.display = "block";
 
@@ -29,7 +40,9 @@ const loadProfile = (data) => {
     document.querySelector("main").classList.add("main--content");
     document.querySelector(".gitHubSearch").style.height = "auto";
 
-    const   {name, login, avatar_url, followers, location, blog} = data;
+
+
+    /* const   {name, login, avatar_url, followers, location, blog} = data;
 
     const   profileName         = document.getElementById("profileName"),
             imgAvatar           = document.getElementById("imgAvatar"),
@@ -41,69 +54,61 @@ const loadProfile = (data) => {
 
 
 
-    profileName.textContent = name;
+ profileName.textContent = name;
     nickName.textContent = login;
     imgAvatar.src= avatar_url;
     followersProfile.textContent = followers;
     country.textContent = location;
     webSite.textContent = blog;
-    webSite.href = blog
+    webSite.href = blog 
 
-    loader.style.display = "none";
+    loader.style.display = "none";*/
 
 
 }
 
 
 
-function Profile(){
+function Profile({profile}) {
     return (
 
         <div className="profile">
-        <div className="profile__img">
-            <img id="imgAvatar" src="" alt="" width="200" height="210" />
+            <div className="profile__img">
+                <img id="imgAvatar" src={profile.avatar_url} alt="" width="200" height="210" />
+            </div>
+            <div className="profile__name">
+                <h2 id="profileName">{profile.name}</h2>
+                <span id="nickName" className="profile__nickname">
+                    {profile.login}
+                </span>
+            </div>
+            <div className="profile__features">
+                <div className="features__item">
+                    <i className="fas fa-globe features__icon"></i>
+                    <a href={`${profile.html_url}`} id="webSite" className="features__name" target="_blank" rel="noreferrer noopener">Github profile</a>
+                </div>
+                <div className="features__item">
+                    <i className="fas fa-map-marker-alt features__icon"></i>
+                    <span id="country" className="features__name">{profile.location}</span>
+                </div>
+
+
+                <div className="features__item">
+                    <i className="far fa-star features__icon"></i>
+                    <span id="followersProfile" className="features__name">{profile.following}</span>
+                </div>
+
+
+                <div className="features__item">
+                    <i className="fas fa-user-friends features__icon"></i>
+                    <span className="features__name">{profile.followers}</span>
+                </div>
+            </div>
+
         </div>
-        <div className="profile__name">
-            <h2 id="profileName">Darth Vader</h2>
-            <span id="nickName" className="profile__nickname">
-                anakinskywalker
-            </span>
-        </div>
-        <div className="profile__features">
-            <div className="features__item">
-                <i className="fas fa-globe features__icon"></i>
-                <a href="/#" id="webSite" className="features__name" target="_blank">The Galactic Empire</a>
-            </div>
-            <div className="features__item">
-                <i className="fas fa-map-marker-alt features__icon"></i>
-                <span id="country" className="features__name">Tatooine</span>
-            </div>
-
-
-            <div className="features__item">
-                <i className="far fa-star features__icon"></i>
-                <span id="followersProfile" className="features__name">1.000.000</span>
-            </div>
-
-
-            <div className="features__item">
-                <i className="fas fa-user-friends features__icon"></i>
-                <span className="features__name">4</span>
-            </div>
-
-            <div className="features__item">
-                <i className="far fa-circle features__icon"></i>
-                <span className="features__name">9.999.999</span>
-            </div>
-        </div>
-
-
-
-
-    </div>
     )
 }
 
 export default Profile;
 
-export { showProfile, loadProfile };
+export { getProfile ,setNameProfile, loadProfile, getNameProfile };
